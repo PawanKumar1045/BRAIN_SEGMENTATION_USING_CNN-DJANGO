@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Image</title>
     <style>
+        /* Reset and base styles */
         * {
             margin: 0;
             padding: 0;
@@ -13,111 +14,389 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
             color: #ffffff;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 2rem;
+            position: relative;
+            overflow: hidden;
         }
 
+        /* Animated background elements */
+        .bg-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+
+        .circle-2 {
+            width: 400px;
+            height: 400px;
+            bottom: -200px;
+            right: -200px;
+            animation-delay: 2s;
+        }
+
+        .circle-3 {
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            left: 10%;
+            animation-delay: 4s;
+        }
+
+        .circle-4 {
+            width: 150px;
+            height: 150px;
+            bottom: 30%;
+            right: 10%;
+            animation-delay: 6s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.5;
+            }
+            25% {
+                transform: translate(5%, 15%) scale(1.1);
+                opacity: 0.7;
+            }
+            50% {
+                transform: translate(10%, 5%) scale(1);
+                opacity: 0.5;
+            }
+            75% {
+                transform: translate(5%, -5%) scale(0.9);
+                opacity: 0.3;
+            }
+            100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.5;
+            }
+        }
+
+        /* Main container */
         .container {
             background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 10px;
-            padding: 2rem;
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 3rem;
             width: 100%;
-            max-width: 500px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 550px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            position: relative;
         }
 
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Decorative elements */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .container:hover::before {
+            opacity: 1;
+        }
+
+        /* Typography */
         h1 {
-            font-size: 2rem;
+            font-size: 2.5rem;
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
             color: #ffffff;
+            position: relative;
+            display: inline-block;
+            width: 100%;
         }
 
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, #fde047, #fbbf24);
+            border-radius: 2px;
+        }
+
+        /* Form elements */
         form {
             display: flex;
             flex-direction: column;
         }
 
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
         }
 
         label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
         }
 
         input[type="file"] {
             display: none;
         }
 
-        .file-input-label {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background-color: #ffffff;
-            color: #4a5568;
-            border-radius: 5px;
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
         }
 
-        .file-input-label:hover {
-            background-color: #f7fafc;
+        .upload-area:hover {
+            border-color: #fde047;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .upload-subtext {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .file-name {
-            margin-top: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             font-size: 0.9rem;
+            word-break: break-all;
+            display: none;
         }
 
-        button[type="submit"] {
-            background-color: #FFFDD0;
-            color: #333333;
+        .file-name.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Submit button */
+        .submit-btn {
+            background: linear-gradient(to right, #fde047, #fbbf24);
+            color: #1e293b;
             border: none;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 5px;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        button[type="submit"]:hover {
-            background-color: #FFF8DC;
-            transform: translateY(-2px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
         }
 
-        @media (max-width: 480px) {
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, #fbbf24, #f59e0b);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .submit-btn:hover::after {
+            opacity: 1;
+        }
+
+        .submit-btn span {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        /* Back button */
+        .back-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            text-align: center;
+            width: 100%;
+        }
+
+        .back-link:hover {
+            color: #fde047;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 640px) {
             .container {
-                padding: 1.5rem;
+                padding: 2rem;
+                border-radius: 15px;
             }
 
             h1 {
-                font-size: 1.75rem;
+                font-size: 2rem;
             }
+
+            .upload-area {
+                padding: 2rem 1rem;
+            }
+
+            .upload-icon {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Animation for successful upload */
+        @keyframes success {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-animation {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(34, 197, 94, 0.9);
+            border-radius: 20px;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: success 0.5s ease forwards;
+            z-index: 10;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-text {
+            font-size: 1.5rem;
+            font-weight: 700;
         }
     </style>
 </head>
 <body>
+    <!-- Animated background elements -->
+    <div class="bg-animation">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+        <div class="circle circle-4"></div>
+    </div>
+
     <div class="container">
-        <h1>Upload Image</h1>
-        <form method="POST" enctype="multipart/form-data">
+        <h1>Upload Your Image</h1>
+        <form method="POST" enctype="multipart/form-data" id="upload-form">
             {% csrf_token %}
             {% for field in form %}
                 <div class="form-group">
                     {% if field.name == 'image' %}
-                        <label for="{{ field.id_for_label }}" class="file-input-label">
-                            Choose File
-                        </label>
+                        <label for="{{ field.id_for_label }}">Select an image to upload</label>
+                        <div class="upload-area" id="upload-area">
+                            <div class="upload-icon">📁</div>
+                            <div class="upload-text">Drag & drop your image here</div>
+                            <div class="upload-subtext">or click to browse files</div>
+                        </div>
                         {{ field }}
                         <div class="file-name" id="file-name"></div>
                     {% else %}
@@ -128,24 +407,90 @@
                         <small>{{ field.help_text|safe }}</small>
                     {% endif %}
                     {% for error in field.errors %}
-                        <p style="color: red">{{ error }}</p>
+                        <p style="color: #fecaca; margin-top: 0.5rem;">{{ error }}</p>
                     {% endfor %}
                 </div>
             {% endfor %}
-            <button type="submit">Upload</button>
+            <button type="submit" class="submit-btn">
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Upload Image
+                </span>
+            </button>
         </form>
+        <a href="/" class="back-link">← Back to Home</a>
+
+        <!-- Success animation (shown after successful upload) -->
+        <div class="success-animation" id="success-animation">
+            <div class="success-icon">✓</div>
+            <div class="success-text">Upload Successful!</div>
+        </div>
     </div>
 
     <script>
+        // File input handling
         const fileInput = document.querySelector('input[type="file"]');
         const fileName = document.getElementById('file-name');
+        const uploadArea = document.getElementById('upload-area');
+        const form = document.getElementById('upload-form');
+        const successAnimation = document.getElementById('success-animation');
 
+        // Handle file selection
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
                 fileName.textContent = e.target.files[0].name;
+                fileName.classList.add('active');
+                uploadArea.style.borderColor = '#fde047';
             } else {
                 fileName.textContent = '';
+                fileName.classList.remove('active');
+                uploadArea.style.borderColor = 'rgba(255, 255, 255, 0.5)';
             }
+        });
+
+        // Handle click on upload area
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Handle drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#fde047';
+            uploadArea.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+            uploadArea.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                fileName.textContent = e.dataTransfer.files[0].name;
+                fileName.classList.add('active');
+                uploadArea.style.borderColor = '#fde047';
+            }
+        });
+
+        // Form submission (for demo purposes - in a real app, you'd handle the server response)
+        form.addEventListener('submit', (e) => {
+            // This is just for demonstration - remove this line in a real application
+            // e.preventDefault();
+
+            // Uncomment the following lines to show the success animation in a demo
+            // setTimeout(() => {
+            //     successAnimation.style.display = 'flex';
+            //     setTimeout(() => {
+            //         window.location.href = '/';
+            //     }, 2000);
+            // }, 1000);
         });
     </script>
 </body>

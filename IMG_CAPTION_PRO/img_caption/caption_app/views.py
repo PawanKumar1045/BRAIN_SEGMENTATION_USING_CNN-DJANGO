@@ -76,7 +76,7 @@ def preprocess_image(image_path, target_size=(256, 256)):
     image = np.expand_dims(image, axis=0)
     return image
 
-def upload_image(request):
+"""def upload_image(request):
     if request.method == 'POST':
         form = ImageUploadForm(request.POST, request.FILES)
 
@@ -109,7 +109,78 @@ def upload_image(request):
 
     else:
         form = ImageUploadForm()
+    return render(request, 'caption_app/upload_image.html', {'form': form})"""
+
+from PIL import Image
+import numpy as np
+import os
+import uuid
+
+from PIL import Image
+import numpy as np
+import os
+import uuid
+import cv2
+
+from PIL import Image
+import numpy as np
+import os
+import uuid
+
+from PIL import Image
+import numpy as np
+import os
+import uuid
+import cv2
+
+def upload_image(request):
+    if request.method == 'POST':
+        form = ImageUploadForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            # Save uploaded image
+            img_instance = form.save()
+            img_path = img_instance.image.path
+            print(f"Uploaded Image Path: {img_path}")
+
+            # Preprocess and predict
+            test_image = preprocess_image(img_path)
+            pred_mask = model.predict(test_image)[0]  # shape: (H, W, 1)
+
+            # Convert original image and prediction mask to 8-bit grayscale
+            original = (test_image[0, :, :, 0] * 255).astype(np.uint8)  # shape: (H, W)
+            mask = (pred_mask[:, :, 0] * 255).astype(np.uint8)
+
+            # Convert grayscale to RGB (original)
+            original_img = Image.fromarray(original).convert("RGB")
+
+            # Apply heatmap to the mask using OpenCV
+            heatmap = cv2.applyColorMap(mask, cv2.COLORMAP_JET)  # BGR
+            heatmap_rgb = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
+            heatmap_img = Image.fromarray(heatmap_rgb)
+
+            # Create a side-by-side image
+            combined_width = original_img.width + heatmap_img.width
+            combined_height = max(original_img.height, heatmap_img.height)
+            combined_img = Image.new("RGB", (combined_width, combined_height))
+            combined_img.paste(original_img, (0, 0))
+            combined_img.paste(heatmap_img, (original_img.width, 0))
+
+            # Save the result
+            output_filename = f"result_{uuid.uuid4().hex}.jpg"
+            output_path = os.path.join("media/results", output_filename)
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            combined_img.save(output_path)
+
+            return render(request, 'caption_app/result.html', {
+                'result_img_path': output_path.replace('\\', '/')
+            })
+
+    else:
+        form = ImageUploadForm()
     return render(request, 'caption_app/upload_image.html', {'form': form})
+
+
 
 
 
