@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container::before,
+        .container::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(to right, #ff6b6b, #feca57);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.3;
+            filter: blur(30px);
+        }
+
+        .container::before {
+            top: -100px;
+            left: -100px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .container::after {
+            bottom: -100px;
+            right: -100px;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(20px, 20px); }
+        }
+
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(to right, #fff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-box {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .user-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+
+        .user-info:not(:last-child) {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .user-info span {
+            font-weight: bold;
+            color: #4a4a4a;
+        }
+
+        .button {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .button:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(45deg);
+            transition: all 0.3s ease;
+        }
+
+        .button:hover::after {
+            left: 100%;
+            top: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Profile</h1>
+
+        <h2>User</h2>
+        <div class="user-box">
+            <div class="user-info">
+                <span>First Name:</span>
+                <p>{{ user.first_name }}</p>
+            </div>
+            <div class="user-info">
+                <span>Last Name:</span>
+                <p>{{ user.last_name }}</p>
+            </div>
+            <div class="user-info">
+                <span>Username:</span>
+                <p>{{ user.username }}</p>
+            </div>
+            <div class="user-info">
+                <span>Email:</span>
+                <p>{{ user.email }}</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('.button').addEventListener('mousedown', function(e) {
+            let x = e.clientX - e.target.offsetLeft;
+            let y = e.clientY - e.target.offsetTop;
+
+            let ripple = document.createElement('span');
+            ripple.style.position = 'absolute';
+            ripple.style.background = 'rgba(255, 255, 255, 0.7)';
+            ripple.style.borderRadius = '50%';
+            ripple.style.width = '0';
+            ripple.style.height = '0';
+            ripple.style.transform = 'translate(-50%, -50%)';
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+
+            this.appendChild(ripple);
+
+            let size = Math.max(this.offsetWidth, this.offsetHeight);
+            ripple.style.width = ripple.style.height = `${size}px`;
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    </script>
+</body>
+</html>
